@@ -15,6 +15,11 @@ const uri = process.env.MONGO_URI;
 
 mongoose.connect(uri);
 
+//* LOGGER MIDDLEWARE
+const commonLoggerMiddleware = require('./src/middlewares/commonLogger.middleware');
+
+app.use(commonLoggerMiddleware);
+
 //* ROUTES
 const router = require('./src/routes/index.routes');
 
