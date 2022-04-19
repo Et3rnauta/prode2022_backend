@@ -23,19 +23,6 @@ router.get('/partidos', function (req, res, next) {
         .catch((error) => {
             next(error);
         });
-
-})
-
-router.get('/partidos-grupos', function (req, res, next) {
-    partido_controller.partidos_list_grupos()
-        .then((answer) => {
-            res.status(200);
-            res.send(answer);
-        })
-        .catch((error) => {
-            next(error);
-        });
-
 })
 
 router.post('/partidos', function (req, res, next) {
