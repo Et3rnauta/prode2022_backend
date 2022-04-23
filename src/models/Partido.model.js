@@ -1,10 +1,5 @@
 const mongoose = require("mongoose");
 
-const prediccionSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    usuarioId: { required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' },
-})
-
 const PartidoSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     equipo1: { type: mongoose.Schema.Types.ObjectId, ref: 'Equipo' },
@@ -37,10 +32,6 @@ const PartidoSchema = new mongoose.Schema({
     partidoEquipo2: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Partido',
-    },
-    predicciones: {
-        type: [prediccionSchema],
-        default: []
     },
 });
 // TODO ver como modificar fecha en mongoose

@@ -20,16 +20,31 @@ const prediccionSchema = new mongoose.Schema({
 
 const UsuarioSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    nombre: {
+    nombreCuenta: {
         type: String,
         required: true,
+        trim: true,
+    },
+    password: {
+        type: String,
+        required: true,
+        select: false,
+    },
+    nombreJugador: {
+        type: String,
         trim: true,
     },
     puntos: {
         type: Number,
         default: 0,
     },
+    dateAdded: {
+        type: Date,
+        default: Date.now()
+    },
     predicciones: [prediccionSchema],
+}, {
+    timestamps: true
 });
 
 const Usuario = mongoose.model("Usuario", UsuarioSchema);

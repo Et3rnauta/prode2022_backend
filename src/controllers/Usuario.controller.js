@@ -50,6 +50,9 @@ module.exports.usuarios_create_post = async function (data) {
     }
 
     data._id = new mongoose.Types.ObjectId;
+    if(!data.nombreJugador) {
+        data.nombreJugador = data.nombreCuenta;
+    } 
 
     const newUsuario = await Usuario.create(data)
         .catch((error) => {
@@ -110,8 +113,6 @@ module.exports.usuarios_delete = async function (_id) {
             content: "No se encuentra el Usuario",
         }
     }
-
-    // TODO Si tiene predicciones, eliminarlas de los partidos
 
     return answer;
 }
