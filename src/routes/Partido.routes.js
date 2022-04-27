@@ -30,7 +30,7 @@ router.post('/partidos', function (req, res, next) {
 
     partido_controller.partidos_create_post(data)
         .then((answer) => {
-            res.status(200);
+            res.status(201);
             res.send(answer);
         })
         .catch((error) => {

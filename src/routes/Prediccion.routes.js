@@ -7,7 +7,7 @@ router.post('/usuarios/:id/prediccion', function (req, res, next) {
 
     prediccion_controller.predicciones_create_post(id, data)
         .then((answer) => {
-            res.status(200);
+            res.status(201);
             res.send(answer);
         })
         .catch((error) => {

@@ -5,8 +5,10 @@ const server = require('http').createServer(app);
 
 //* COMPONENTS
 const cors = require('cors');
-require('dotenv-safe').config();
 app.use(cors());
+
+require('dotenv-safe').config();
+
 app.use(express.json());
 
 //* DATABASE
