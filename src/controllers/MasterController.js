@@ -5,11 +5,11 @@ module.exports.limpiar_partidos_equipos = async function () {
     let fullRes = {};
 
     const equipoRes = await Equipo.deleteMany();
-    
+
     if (equipoRes.acknowledged) {
         fullRes.equiposEliminados = equipoRes.deletedCount;
-        
-        
+
+
         const partidoRes = await Partido.deleteMany();
         console.log(partidoRes)
         if (partidoRes.acknowledged) {
@@ -23,4 +23,10 @@ module.exports.limpiar_partidos_equipos = async function () {
     }
 
     return fullRes;
+}
+
+module.exports.limpiar_predicciones_partidos = async function () {
+    let res = await Partido.updateMany({}, { $unset: { "predicciones": 0 } });
+
+    return res;
 }

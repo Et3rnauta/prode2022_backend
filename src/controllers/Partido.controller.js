@@ -127,8 +127,7 @@ module.exports.partidos_delete = async function (_id) {
         usuarios.forEach(usuario => {
             usuario.predicciones = usuario.predicciones.filter(prediccion =>
                 prediccion.idPartido !== _id);
-        });
+        });        
     }
-    
     return answer;
 }
