@@ -17,7 +17,6 @@ module.exports.usuarios_get = async function (id) {
     const query = await Usuario.findById(id).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",
@@ -44,6 +43,7 @@ module.exports.usuarios_get = async function (id) {
  * Id no es necesario, se crea en la funcion
  */
 module.exports.usuarios_create_post = async function (data) {
+    // TODO ver si sacar _id
     data._id = new mongoose.Types.ObjectId;
     if (!data.nombreJugador) {
         data.nombreJugador = data.nombreCuenta;
@@ -64,7 +64,6 @@ module.exports.usuarios_put = async function (id, data) {
     const query = await Usuario.findOneAndUpdate({ _id: id }, data, { new: true }).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",
@@ -90,7 +89,6 @@ module.exports.usuarios_delete = async function (_id) {
     const answer = await Usuario.deleteOne({ _id }).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",
@@ -112,11 +110,10 @@ module.exports.usuarios_delete = async function (_id) {
     return answer;
 }
 
-module.exports.usuarios_get_by_name = async function (nombreCuenta) {
+module.exports.usuarios_get_by_name_with_password = async function (nombreCuenta) {
     const query = await Usuario.findOne({ nombreCuenta }).select('+password').exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Nombre incorrecto",

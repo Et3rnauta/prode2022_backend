@@ -22,6 +22,11 @@ const commonLoggerMiddleware = require('./src/middlewares/commonLogger.middlewar
 
 app.use(commonLoggerMiddleware);
 
+//* VALIDATE TOKEN MIDDLEWARE
+const validateTokenMiddleware = require('./src/middlewares/validateToken.middleware');
+
+app.use(validateTokenMiddleware);
+
 //* ROUTES
 const router = require('./src/routes/index.routes');
 
