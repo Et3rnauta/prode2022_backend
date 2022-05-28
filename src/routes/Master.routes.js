@@ -26,7 +26,7 @@ router.post('/login', async function (req, res, next) {
             await refresh_token_controller.refresh_token_post(refreshToken);
 
             res.status(200);
-            res.send({ accessToken, refreshToken });
+            res.send({ accessToken, refreshToken, userId: userWithPass._id });
         } else {
             throw {
                 number: 401,
