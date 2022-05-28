@@ -42,7 +42,7 @@ router.post('/token', async function (req, res) {
     const refreshToken = req.body.token;
     if (refreshToken == null) return res.sendStatus(401);
     let tokenExists = await refresh_token_controller.refresh_token_exists(refreshToken);
-    if (tokenExists) return res.sendStatus(403);
+    if (!tokenExists) return res.sendStatus(403);
 
     jsonwebtoken.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
@@ -61,6 +61,10 @@ router.delete('/logout', async function (req, res) {
     res.sendStatus(204);
 });
 
+router.get('/test', async function (req, res) {
+    res.sendStatus(204);
+})
+
 //* Aux routes
 router.delete('/limpiar_partidos_equipos', function (req, res, next) {
     master_controller.limpiar_partidos_equipos()
@@ -74,6 +78,17 @@ router.delete('/limpiar_partidos_equipos', function (req, res, next) {
 
 router.put('/limpiar_predicciones_partidos', function (req, res, next) {
     master_controller.limpiar_predicciones_partidos()
+        .then((answer) => {
+            res.status(200);
+            res.send(answer);
+        })
+        .catch((error) => {
+            next(error);
+        });
+});
+
+router.delete('/token', function (req, res, next) {
+    refresh_token_controller.refresh_token_delete_all()
         .then((answer) => {
             res.status(200);
             res.send(answer);

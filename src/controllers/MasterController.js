@@ -9,9 +9,7 @@ module.exports.limpiar_partidos_equipos = async function () {
     if (equipoRes.acknowledged) {
         fullRes.equiposEliminados = equipoRes.deletedCount;
 
-
         const partidoRes = await Partido.deleteMany();
-        console.log(partidoRes)
         if (partidoRes.acknowledged) {
             fullRes.acknowledged = true;
             fullRes.partidosEliminados = partidoRes.deletedCount;

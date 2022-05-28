@@ -11,7 +11,7 @@ module.exports.refresh_token_exists = async function (refreshToken) {
             }
         });
         
-    return query === null;
+    return query != null;
 }
 
 module.exports.refresh_token_post = async function (refreshToken) {
@@ -38,4 +38,8 @@ module.exports.refresh_token_delete = async function (refreshToken) {
         });
 
     return answer.deletedCount === 1;
+}
+
+module.exports.refresh_token_delete_all = async function () {
+    return await RefreshToken.deleteMany();
 }
