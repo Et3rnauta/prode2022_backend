@@ -17,7 +17,6 @@ module.exports.equipos_get = async function (id) {
     const query = await Equipo.findById(id).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",
@@ -65,7 +64,6 @@ module.exports.equipos_put = async function (id, data) {
     const query = await Equipo.findOneAndUpdate({ _id: id }, data, { new: true }).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",
@@ -91,7 +89,6 @@ module.exports.equipos_delete = async function (_id) {
     const answer = await Equipo.deleteOne({ _id }).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",

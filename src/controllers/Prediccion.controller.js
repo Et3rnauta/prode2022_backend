@@ -18,7 +18,6 @@ module.exports.predicciones_create_post = async function (usuarioId, data) {
     const usuario = await Usuario.findById(usuarioId).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "El id de Usuario es incorrecto",
@@ -40,7 +39,6 @@ module.exports.predicciones_create_post = async function (usuarioId, data) {
     const partido = await Partido.findById(data.idPartido).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "El id del Partido es incorrecto",
@@ -79,7 +77,6 @@ module.exports.predicciones_delete = async function (usuarioId, prediccionId) {
     const usuario = await Usuario.findById(id).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",

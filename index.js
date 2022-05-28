@@ -5,8 +5,10 @@ const server = require('http').createServer(app);
 
 //* COMPONENTS
 const cors = require('cors');
-require('dotenv-safe').config();
 app.use(cors());
+
+require('dotenv-safe').config();
+
 app.use(express.json());
 
 //* DATABASE
@@ -19,6 +21,11 @@ mongoose.connect(uri);
 const commonLoggerMiddleware = require('./src/middlewares/commonLogger.middleware');
 
 app.use(commonLoggerMiddleware);
+
+//* VALIDATE TOKEN MIDDLEWARE
+const validateTokenMiddleware = require('./src/middlewares/validateToken.middleware');
+
+app.use(validateTokenMiddleware);
 
 //* ROUTES
 const router = require('./src/routes/index.routes');

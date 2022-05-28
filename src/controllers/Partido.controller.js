@@ -31,7 +31,6 @@ module.exports.partidos_get = async function (id) {
     const query = await Partido.findById(id).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",
@@ -60,7 +59,6 @@ module.exports.partidos_create_post = async function (data) {
         const query = await Equipo.findById(idEquipo).exec()
             .catch((error) => {
                 if (error.name === "CastError") {
-                    //* If id is wrong, return nothing
                     throw {
                         number: 400,
                         content: `Id incorrecto para el Equipo ${numEquipo}`,
@@ -98,7 +96,6 @@ module.exports.partidos_delete = async function (_id) {
     const answer = await Partido.deleteOne({ _id }).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",
@@ -127,8 +124,7 @@ module.exports.partidos_delete = async function (_id) {
         usuarios.forEach(usuario => {
             usuario.predicciones = usuario.predicciones.filter(prediccion =>
                 prediccion.idPartido !== _id);
-        });
+        });        
     }
-    
     return answer;
 }

@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-// TODO capaz sea necesario una fechaAdded
 const prediccionSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     golesEquipo1: {
