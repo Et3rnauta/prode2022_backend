@@ -14,7 +14,7 @@ const prediccionSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    idPartido: { required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Partido' },
+    partidoId: { required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Partido' },
 })
 
 const UsuarioSchema = new mongoose.Schema({

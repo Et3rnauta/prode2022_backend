@@ -15,6 +15,21 @@ router.post('/usuarios/:id/prediccion', function (req, res, next) {
         });
 })
 
+router.put('/usuarios/:id/prediccion/:prediccionId', function (req, res, next) {
+    const id = req.params.id;
+    const prediccionId = req.params.prediccionId;
+    const data = req.body;
+
+    prediccion_controller.predicciones_put(id, prediccionId, data)
+        .then((answer) => {
+            res.status(201);
+            res.send(answer);
+        })
+        .catch((error) => {
+            next(error);
+        });
+})
+
 router.delete('/usuarios/:id/prediccion/:prediccionId', function (req, res, next) {
     const id = req.params.id;
     const prediccionId = req.params.prediccionId;
