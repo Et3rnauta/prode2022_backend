@@ -41,6 +41,10 @@ const UsuarioSchema = new mongoose.Schema({
         type: Date,
         default: Date.now()
     },
+    imagenSrc: {
+        type: String,
+        trim: true,
+    },
     predicciones: [prediccionSchema],
 }, {
     timestamps: true

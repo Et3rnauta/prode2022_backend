@@ -41,6 +41,20 @@ router.post('/usuarios', async function (req, res, next) {
     }
 })
 
+router.put('/usuarios/:id', async function (req, res, next) {
+    const id = req.params.id;
+    const data = req.body;
+
+    usuario_controller.usuarios_put(id, data)
+        .then((answer) => {
+            res.status(200);
+            res.send(answer);
+        })
+        .catch((error) => {
+            next(error);
+        });
+})
+
 router.delete('/usuarios/:id', function (req, res, next) {
     const id = req.params.id;
 
