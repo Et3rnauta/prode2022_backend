@@ -41,6 +41,8 @@ router.post('/usuarios', async function (req, res, next) {
     }
 })
 
+// TODO agregar ruta put que actualiza los scores de los jugadores
+
 router.put('/usuarios/:id', async function (req, res, next) {
     const id = req.params.id;
     const data = req.body;
