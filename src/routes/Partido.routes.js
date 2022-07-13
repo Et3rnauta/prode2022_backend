@@ -38,6 +38,20 @@ router.post('/partidos', function (req, res, next) {
         });
 })
 
+router.put('/partidos/:id', function (req, res, next) {
+    const id = req.params.id;
+    const data = req.body;
+
+    partido_controller.partidos_put(id, data)
+        .then((answer) => {
+            res.status(200);
+            res.send(answer);
+        })
+        .catch((error) => {
+            next(error);
+        });
+})
+
 router.delete('/partidos/:id', function (req, res, next) {
     const id = req.params.id;
 
