@@ -74,10 +74,10 @@ module.exports.predicciones_create_post = async function (usuarioId, data) {
 }
 
 module.exports.predicciones_put = async function (usuarioId, prediccionId, data) {
-    if (data.partidoId === undefined) {
+    if (data.partidoId) {
         throw {
-            number: 400,
-            content: "Se requiere un id de Partido",
+            number: 403,
+            content: "No se puede modificar el partido",
         }
     }
 
@@ -102,27 +102,6 @@ module.exports.predicciones_put = async function (usuarioId, prediccionId, data)
         }
     }
 
-    const partido = await Partido.findById(data.partidoId).exec()
-        .catch((error) => {
-            if (error.name === "CastError") {
-                throw {
-                    number: 400,
-                    content: "El id del Partido es incorrecto",
-                }
-            } else {
-                throw {
-                    content: error,
-                }
-            }
-        });
-
-    if (partido === null) {
-        throw {
-            number: 404,
-            content: "No se encuentra el Partido",
-        }
-    }
-
     //* Actualizar prediccion
     const prediccionIndex = usuario.predicciones.findIndex(p => String(p._id) === String(prediccionId))
     if (prediccionIndex === -1) {
@@ -130,13 +109,15 @@ module.exports.predicciones_put = async function (usuarioId, prediccionId, data)
             number: 404,
             content: "No se encuentra la prediccion",
         }
-    } else if (String(usuario.predicciones[prediccionIndex].partidoId) != String(data.partidoId)) {
-        throw {
-            number: 400,
-            content: "El id del Partido no corresponde al partido en la Prediccion",
-        }
     } else {
-        usuario.predicciones.splice(prediccionIndex, 1, data);
+        let oldPrediccion = usuario.predicciones[prediccionIndex];
+        usuario.predicciones.splice(prediccionIndex, 1, {
+            _id: oldPrediccion._id,
+            golesEquipo1: data.golesEquipo1 != undefined ? data.golesEquipo1 : oldPrediccion.golesEquipo1,
+            golesEquipo2: data.golesEquipo2 != undefined ? data.golesEquipo2 : oldPrediccion.golesEquipo2,
+            puntos: data.puntos != undefined ? data.puntos : oldPrediccion.puntos,
+            partidoId: oldPrediccion.partidoId
+        }); // Los datos viejos con los nuevos superpuestos+
         await usuario.save();
     }
 
@@ -144,7 +125,7 @@ module.exports.predicciones_put = async function (usuarioId, prediccionId, data)
 }
 
 module.exports.predicciones_delete = async function (usuarioId, prediccionId) {
-    const usuario = await Usuario.findById(id).exec()
+    const usuario = await Usuario.findById(usuarioId).exec()
         .catch((error) => {
             if (error.name === "CastError") {
                 throw {
