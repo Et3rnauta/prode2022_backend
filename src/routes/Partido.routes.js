@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const partido_controller = require('../controllers/Partido.controller');
+const puntaje_controller = require('../controllers/Puntaje.controller');
 
 router.get('/partidos/:id', function (req, res, next) {
     const id = req.params.id;
@@ -32,6 +33,20 @@ router.post('/partidos', function (req, res, next) {
         .then((answer) => {
             res.status(201);
             res.send(answer);
+        })
+        .catch((error) => {
+            next(error);
+        });
+})
+
+router.put('/partidos/:id/update_score', function (req, res, next) {
+    const id = req.params.id;
+    const golesEquipo1 = req.body.golesEquipo1;
+    const golesEquipo2 = req.body.golesEquipo2;
+
+    puntaje_controller.partido_update_resultado(id, golesEquipo1, golesEquipo2)
+        .then(() => {
+            res.sendStatus(204);
         })
         .catch((error) => {
             next(error);

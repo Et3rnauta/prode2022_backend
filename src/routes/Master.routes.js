@@ -7,6 +7,9 @@ const generateAccessToken = require('../utils/generateAccessToken');
 const generateRefreshToken = require('../utils/generateRefreshToken');
 const jsonwebtoken = require('jsonwebtoken');
 
+const partido_controller = require('../controllers/Partido.controller');
+const puntaje_controller = require('../controllers/Puntaje.controller');
+
 router.post('/login', async function (req, res, next) {
     const data = req.body;
 
@@ -54,6 +57,48 @@ router.post('/token', async function (req, res) {
         res.status(200);
         res.send({ accessToken });
     })
+});
+
+router.put('/puntaje-prueba', async function (req, res, next) {
+    try {
+        // Grupo A
+        await puntaje_controller.partido_update_resultado("625e040c570a70de1c3d6be8", 0, 0);
+        await puntaje_controller.partido_update_resultado("625e040c570a70de1c3d6bec", 1, 0);
+        await puntaje_controller.partido_update_resultado("625e040c570a70de1c3d6bf0", 3, 1);
+        await puntaje_controller.partido_update_resultado("625e040d570a70de1c3d6bf4", 0, 2);
+        await puntaje_controller.partido_update_resultado("625e040d570a70de1c3d6bf8", 2, 2);
+        await puntaje_controller.partido_update_resultado("625e040d570a70de1c3d6bfc", 2, 3);
+
+        // Argentina - Grupo C
+        await puntaje_controller.partido_update_resultado("625e0642570a70de1c3d6c2c", 3, 0);
+        await puntaje_controller.partido_update_resultado("625e0643570a70de1c3d6c30", 2, 1);
+        await puntaje_controller.partido_update_resultado("625e0643570a70de1c3d6c34", 1, 1);
+
+        res.sendStatus(204);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.delete('/puntaje-prueba', async function (req, res, next) {
+    try {
+        // Grupo A
+        await partido_controller.partidos_put("625e040c570a70de1c3d6be8", { golesEquipo1: null, golesEquipo2: null, seRealizo: false })
+        await partido_controller.partidos_put("625e040c570a70de1c3d6bec", { golesEquipo1: null, golesEquipo2: null, seRealizo: false })
+        await partido_controller.partidos_put("625e040c570a70de1c3d6bf0", { golesEquipo1: null, golesEquipo2: null, seRealizo: false })
+        await partido_controller.partidos_put("625e040d570a70de1c3d6bf4", { golesEquipo1: null, golesEquipo2: null, seRealizo: false })
+        await partido_controller.partidos_put("625e040d570a70de1c3d6bf8", { golesEquipo1: null, golesEquipo2: null, seRealizo: false })
+        await partido_controller.partidos_put("625e040d570a70de1c3d6bfc", { golesEquipo1: null, golesEquipo2: null, seRealizo: false })
+
+        // Argentina - Grupo C
+        await partido_controller.partidos_put("625e0642570a70de1c3d6c2c", { golesEquipo1: null, golesEquipo2: null, seRealizo: false })
+        await partido_controller.partidos_put("625e0643570a70de1c3d6c30", { golesEquipo1: null, golesEquipo2: null, seRealizo: false })
+        await partido_controller.partidos_put("625e0643570a70de1c3d6c34", { golesEquipo1: null, golesEquipo2: null, seRealizo: false })
+        
+        res.sendStatus(204);
+    } catch (error) {
+        next(error);
+    }
 });
 
 router.delete('/logout', async function (req, res) {
