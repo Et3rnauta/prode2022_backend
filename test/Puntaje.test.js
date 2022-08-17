@@ -10,7 +10,7 @@ describe('Puntaje', () => {
             jest.restoreAllMocks();
         });
 
-        it('should update Partido', async () => {
+        it('should actualizar Partido', async () => {
             //* Arrange
             const partidoId = 123;
             const partidoData = {
@@ -41,7 +41,7 @@ describe('Puntaje', () => {
             expect(dataRecibida).toMatchObject(partidoData);
         });
 
-        it('should update Predicciones de Usuarios con el valor correcto', async () => {
+        it('should actualizar Predicciones de Usuarios con el valor correcto', async () => {
             //* Arrange
             const partidoId = 123;
             const partidoData = {
@@ -96,6 +96,65 @@ describe('Puntaje', () => {
             expect(prediccionIdRecibido).toBe(usuarioTest.predicciones[0]._id);
             expect(dataRecibida).toHaveProperty('puntos');
             expect(dataRecibida["puntos"]).toBe(puntosEsperados);
+        });
+
+        it('should actualizar el puntaje total del Usuario', () => {
+            // //* Arrange
+            // const partidoId = 123;
+            // const partidoData = {
+            //     golesEquipo1: 1,
+            //     golesEquipo2: 0,
+            //     seRealizo: true,
+            // };
+
+            // jest.spyOn(partidoController, 'partidos_put').mockImplementationOnce(async () => { });
+
+            // const usuarioTest = {
+            //     _id: 111,
+            //     puntos: 1,
+            //     predicciones: [{
+            //         _id: 222,
+            //         golesEquipo1: partidoData.golesEquipo1,
+            //         golesEquipo2: partidoData.golesEquipo2,
+            //         partidoId,
+            //     }],
+            // };
+            // const usuariosFind = jest.spyOn(Usuario, 'find').mockImplementationOnce(async () => {
+            //     return [usuarioTest];
+            // });
+
+            // // TODO implementar
+
+            // let usuarioIdRecibido, prediccionIdRecibido, dataRecibida;
+            // const usuariosPrediccionesPut = jest.spyOn(prediccionController, 'predicciones_put').mockImplementationOnce(
+            //     async (usuarioId, prediccionId, data) => {
+            //         usuarioIdRecibido = usuarioId;
+            //         prediccionIdRecibido = prediccionId;
+            //         dataRecibida = data;
+            //     }
+            // );
+
+            // let puntosEsperados = validarPrediccionGrupos(
+            //     {
+            //         golesEquipo1: usuarioTest.predicciones[0].golesEquipo1,
+            //         golesEquipo2: usuarioTest.predicciones[0].golesEquipo2,
+            //     },
+            //     {
+            //         golesEquipo1: partidoData.golesEquipo1,
+            //         golesEquipo2: partidoData.golesEquipo2,
+            //     }
+            // )
+
+            // //* Act
+            // await puntajeController.partido_update_resultado(partidoId, partidoData.golesEquipo1, partidoData.golesEquipo2);
+
+            // //* Assert
+            // expect(usuariosFind).toHaveBeenCalledTimes(1);
+            // expect(usuariosPrediccionesPut).toHaveBeenCalledTimes(1);
+            // expect(usuarioIdRecibido).toBe(usuarioTest._id);
+            // expect(prediccionIdRecibido).toBe(usuarioTest.predicciones[0]._id);
+            // expect(dataRecibida).toHaveProperty('puntos');
+            // expect(dataRecibida["puntos"]).toBe(puntosEsperados);            
         });
     })
 

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Equipo = require('../models/Equipo.model');
 const Partido = require('../models/Partido.model');
 const Usuario = require('../models/Usuario.model');
+const prediccionController = require('./Prediccion.controller');
 
 module.exports.partidos_list = async function () {
     const query = await Partido.find()
@@ -148,10 +149,18 @@ module.exports.partidos_delete = async function (_id) {
                 };
             });
 
-        usuarios.forEach(usuario => {
+        for (const usuario of usuarios) {
             usuario.predicciones = usuario.predicciones.filter(prediccion =>
                 prediccion.idPartido !== _id);
-        });
+
+            await Usuario.findOneAndUpdate({ _id: usuario._id }, {
+                predicciones: usuario.predicciones.filter(prediccion => prediccion.idPartido !== _id)
+            })
+                .exec()
+                .catch((error) => {
+                    throw { content: error }
+                });
+        }
     }
     return answer;
 }
