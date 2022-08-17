@@ -1,5 +1,6 @@
 const partidoController = require('./Partido.controller');
 const prediccionController = require('./Prediccion.controller');
+const usuario_controller = require('./Usuario.controller');
 const Usuario = require('../models/Usuario.model');
 const validarPrediccionGrupos = require('../utils/puntaje/validarPrediccionGrupos');
 
@@ -36,6 +37,9 @@ module.exports.partido_update_resultado = async function (partidoId, golesEquipo
                 }
             )
 
+            let userPuntos = 0;
+            usuario.predicciones.forEach((p, i) => { if (i != prediccionIndex) userPuntos += p.puntos });
+            
             await prediccionController.predicciones_put(
                 usuario._id,
                 usuario.predicciones[prediccionIndex]._id,
@@ -43,6 +47,11 @@ module.exports.partido_update_resultado = async function (partidoId, golesEquipo
                     puntos
                 }
             );
+            userPuntos += puntos;
+
+            await usuario_controller.usuarios_put(usuario._id, {
+                puntos: userPuntos
+            })
         }
     }
 

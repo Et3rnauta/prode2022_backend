@@ -99,6 +99,7 @@ module.exports.partidos_put = async function (id, data) {
     const query = await Partido.findOneAndUpdate({ _id: id }, data, { new: true }).exec()
         .catch((error) => {
             if (error.name === "CastError") {
+                // TODO Cambiar error, da cuando un valor de data esta mal tamb
                 throw {
                     number: 400,
                     content: "Id incorrecto",

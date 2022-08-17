@@ -1,6 +1,7 @@
 const partidoController = require('../src/controllers/Partido.controller');
 const prediccionController = require('../src/controllers/Prediccion.controller');
 const puntajeController = require('../src/controllers/Puntaje.controller');
+const usuario_controller = require('../src/controllers/Usuario.controller');
 const Usuario = require('../src/models/Usuario.model');
 const validarPrediccionGrupos = require('../src/utils/puntaje/validarPrediccionGrupos');
 
@@ -52,6 +53,8 @@ describe('Puntaje', () => {
 
             jest.spyOn(partidoController, 'partidos_put').mockImplementationOnce(async () => { });
 
+            jest.spyOn(usuario_controller, 'usuarios_put').mockImplementationOnce(async () => { });
+
             const usuarioTest = {
                 _id: 111,
                 puntos: 0,
@@ -65,6 +68,8 @@ describe('Puntaje', () => {
             const usuariosFind = jest.spyOn(Usuario, 'find').mockImplementationOnce(async () => {
                 return [usuarioTest];
             });
+
+            jest.spyOn(usuario_controller, 'usuarios_put').mockImplementationOnce(async () => { });
 
             let usuarioIdRecibido, prediccionIdRecibido, dataRecibida;
             const usuariosPrediccionesPut = jest.spyOn(prediccionController, 'predicciones_put').mockImplementationOnce(
