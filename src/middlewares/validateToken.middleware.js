@@ -4,7 +4,7 @@ const jsonwebtoken = require("jsonwebtoken");
  * For validating tokens
  */
 module.exports = (req, res, next) => {
-    const nonSecurePaths = ['/', '/login', '/token', '/logout'];
+    const nonSecurePaths = ['/', '/login', '/token', '/logout', '/test'];
     if (nonSecurePaths.includes(req.path)) return next();
 
     const authHeader = req.headers['authorization'];

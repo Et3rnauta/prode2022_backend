@@ -73,6 +73,7 @@ router.put('/puntaje-prueba', async function (req, res, next) {
         await puntaje_controller.partido_update_resultado("625e0642570a70de1c3d6c2c", 3, 0);
         await puntaje_controller.partido_update_resultado("625e0643570a70de1c3d6c30", 2, 1);
         await puntaje_controller.partido_update_resultado("625e0643570a70de1c3d6c34", 1, 1);
+        await puntaje_controller.partido_update_resultado("625e0643570a70de1c3d6c34", 1, 1);
 
         res.sendStatus(204);
     } catch (error) {
