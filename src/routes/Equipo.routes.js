@@ -45,7 +45,7 @@ router.post('/equipos', function (req, res, next) {
 
     equipo_controller.equipos_create_post(data)
         .then((answer) => {
-            res.status(200);
+            res.status(201);
             res.send(answer);
         })
         .catch((error) => {

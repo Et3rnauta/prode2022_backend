@@ -8,7 +8,7 @@ const Usuario = require('../models/Usuario.model');
  * Id no es necesario, se crea en la funcion
  */
 module.exports.predicciones_create_post = async function (usuarioId, data) {
-    if (data.idPartido === undefined) {
+    if (data.partidoId === undefined) {
         throw {
             number: 400,
             content: "Se requiere un id de Partido",
@@ -18,7 +18,6 @@ module.exports.predicciones_create_post = async function (usuarioId, data) {
     const usuario = await Usuario.findById(usuarioId).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "El id de Usuario es incorrecto",
@@ -37,10 +36,9 @@ module.exports.predicciones_create_post = async function (usuarioId, data) {
         }
     }
 
-    const partido = await Partido.findById(data.idPartido).exec()
+    const partido = await Partido.findById(data.partidoId).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "El id del Partido es incorrecto",
@@ -60,7 +58,7 @@ module.exports.predicciones_create_post = async function (usuarioId, data) {
     }
 
     //* Se fija si ya hay prediccion para el partido
-    if (usuario.predicciones.some(p => String(p.idPartido) === String(data.idPartido))) {
+    if (usuario.predicciones.some(p => String(p.partidoId) === String(data.partidoId))) {
         throw {
             number: 409,
             content: "El Partido ya tiene una Prediccion asignada",
@@ -75,11 +73,61 @@ module.exports.predicciones_create_post = async function (usuarioId, data) {
     return data;
 }
 
-module.exports.predicciones_delete = async function (usuarioId, prediccionId) {
-    const usuario = await Usuario.findById(id).exec()
+module.exports.predicciones_put = async function (usuarioId, prediccionId, data) {
+    if (data.partidoId) {
+        throw {
+            number: 403,
+            content: "No se puede modificar el partido",
+        }
+    }
+
+    const usuario = await Usuario.findById(usuarioId).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
+                throw {
+                    number: 400,
+                    content: "El id de Usuario es incorrecto",
+                }
+            } else {
+                throw {
+                    content: error,
+                }
+            }
+        });
+
+    if (usuario === null) {
+        throw {
+            number: 404,
+            content: "No se encuentra el Usuario",
+        }
+    }
+
+    //* Actualizar prediccion
+    const prediccionIndex = usuario.predicciones.findIndex(p => String(p._id) === String(prediccionId))
+    if (prediccionIndex === -1) {
+        throw {
+            number: 404,
+            content: "No se encuentra la prediccion",
+        }
+    } else {
+        let oldPrediccion = usuario.predicciones[prediccionIndex];
+        usuario.predicciones.splice(prediccionIndex, 1, {
+            _id: oldPrediccion._id,
+            golesEquipo1: data.golesEquipo1 != undefined ? data.golesEquipo1 : oldPrediccion.golesEquipo1,
+            golesEquipo2: data.golesEquipo2 != undefined ? data.golesEquipo2 : oldPrediccion.golesEquipo2,
+            puntos: data.puntos != undefined ? data.puntos : oldPrediccion.puntos,
+            partidoId: oldPrediccion.partidoId
+        }); // Los datos viejos con los nuevos superpuestos+
+        await usuario.save();
+    }
+
+    return data;
+}
+
+module.exports.predicciones_delete = async function (usuarioId, prediccionId) {
+    const usuario = await Usuario.findById(usuarioId).exec()
+        .catch((error) => {
+            if (error.name === "CastError") {
                 throw {
                     number: 400,
                     content: "Id incorrecto",

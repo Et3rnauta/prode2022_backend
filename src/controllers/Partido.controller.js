@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Equipo = require('../models/Equipo.model');
 const Partido = require('../models/Partido.model');
 const Usuario = require('../models/Usuario.model');
+const prediccionController = require('./Prediccion.controller');
 
 module.exports.partidos_list = async function () {
     const query = await Partido.find()
@@ -31,7 +32,6 @@ module.exports.partidos_get = async function (id) {
     const query = await Partido.findById(id).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",
@@ -60,7 +60,6 @@ module.exports.partidos_create_post = async function (data) {
         const query = await Equipo.findById(idEquipo).exec()
             .catch((error) => {
                 if (error.name === "CastError") {
-                    //* If id is wrong, return nothing
                     throw {
                         number: 400,
                         content: `Id incorrecto para el Equipo ${numEquipo}`,
@@ -94,11 +93,38 @@ module.exports.partidos_create_post = async function (data) {
     return newUsuario;
 }
 
+module.exports.partidos_put = async function (id, data) {
+    data._id = undefined;
+
+    const query = await Partido.findOneAndUpdate({ _id: id }, data, { new: true }).exec()
+        .catch((error) => {
+            if (error.name === "CastError") {
+                // TODO Cambiar error, da cuando un valor de data esta mal tamb
+                throw {
+                    number: 400,
+                    content: "Id incorrecto",
+                }
+            } else {
+                throw {
+                    content: error,
+                }
+            }
+        });
+
+    if (query === null) {
+        throw {
+            number: 404,
+            content: "No se encuentra el Partido",
+        }
+    }
+
+    return query;
+}
+
 module.exports.partidos_delete = async function (_id) {
     const answer = await Partido.deleteOne({ _id }).exec()
         .catch((error) => {
             if (error.name === "CastError") {
-                //* If id is wrong, return nothing
                 throw {
                     number: 400,
                     content: "Id incorrecto",
@@ -123,12 +149,19 @@ module.exports.partidos_delete = async function (_id) {
                     content: error,
                 };
             });
-    
-        usuarios.forEach(usuario => {
+
+        for (const usuario of usuarios) {
             usuario.predicciones = usuario.predicciones.filter(prediccion =>
                 prediccion.idPartido !== _id);
-        });
+
+            await Usuario.findOneAndUpdate({ _id: usuario._id }, {
+                predicciones: usuario.predicciones.filter(prediccion => prediccion.idPartido !== _id)
+            })
+                .exec()
+                .catch((error) => {
+                    throw { content: error }
+                });
+        }
     }
-    
     return answer;
 }
