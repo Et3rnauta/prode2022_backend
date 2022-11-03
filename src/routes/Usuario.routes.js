@@ -15,6 +15,19 @@ router.get('/usuarios/:id', function (req, res, next) {
         });
 })
 
+router.get('/usuarios-con-password/:id', function (req, res, next) {
+    const id = req.params.id;
+
+    usuario_controller.usuarios_get_with_password(id)
+        .then((answer) => {
+            res.status(200);
+            res.send(answer);
+        })
+        .catch((error) => {
+            next(error);
+        });
+})
+
 router.get('/usuarios', function (req, res, next) {
     usuario_controller.usuarios_list()
         .then((answer) => {
@@ -46,6 +59,8 @@ router.post('/usuarios', async function (req, res, next) {
 router.put('/usuarios/:id', async function (req, res, next) {
     const id = req.params.id;
     const data = req.body;
+
+    if (data.password) data.password = await bcrypt.hash(req.body.password, 10);
 
     usuario_controller.usuarios_put(id, data)
         .then((answer) => {
