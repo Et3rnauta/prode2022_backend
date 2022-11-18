@@ -40,7 +40,7 @@ app.use(errorMiddlewares.errorResponder);
 app.use(errorMiddlewares.failSafeHandler);
 
 //* INIT
-const PORT = process.env.SERVER_PORT || 3000;
+const PORT = process.env.PORT || 3000;
 const appServer = server.listen(PORT, function () {
     console.log(`Server listening on port ${PORT}`);
 });

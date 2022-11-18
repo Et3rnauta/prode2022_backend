@@ -108,7 +108,8 @@ router.delete('/logout', async function (req, res) {
 });
 
 router.get('/test', async function (req, res) {
-    res.sendStatus(204);
+    res.status(200);
+    res.send({ message: "Live from New York, it's Saturday Night!" });
 })
 
 //* Aux routes
