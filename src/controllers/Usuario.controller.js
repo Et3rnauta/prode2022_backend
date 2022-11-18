@@ -46,7 +46,11 @@ module.exports.usuarios_create_post = async function (data) {
     // TODO ver si sacar _id
     data._id = new mongoose.Types.ObjectId;
     if (!data.nombreJugador) {
-        data.nombreJugador = data.nombreCuenta;
+        if (data.nombreCuenta.includes('@')) {            
+            data.nombreJugador = data.nombreCuenta.substring(0, data.nombreCuenta.indexOf('@'));
+        } else {
+            data.nombreJugador = data.nombreCuenta;
+        }
     }
 
     const newUsuario = await Usuario.create(data)
