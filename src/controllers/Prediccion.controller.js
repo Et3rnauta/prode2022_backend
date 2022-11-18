@@ -119,9 +119,14 @@ module.exports.predicciones_put = async function (usuarioId, prediccionId, data)
             partidoId: oldPrediccion.partidoId
         }); // Los datos viejos con los nuevos superpuestos+
         await usuario.save();
-    }
 
-    return data;
+        return {
+            golesEquipo1: data.golesEquipo1 != undefined ? +data.golesEquipo1 : +oldPrediccion.golesEquipo1,
+            golesEquipo2: data.golesEquipo2 != undefined ? +data.golesEquipo2 : +oldPrediccion.golesEquipo2,
+            _id: oldPrediccion._id,
+            partidoId: oldPrediccion.partidoId
+        };
+    }
 }
 
 module.exports.predicciones_delete = async function (usuarioId, prediccionId) {
