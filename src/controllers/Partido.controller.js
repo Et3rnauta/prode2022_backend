@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Equipo = require('../models/Equipo.model');
 const Partido = require('../models/Partido.model');
 const Usuario = require('../models/Usuario.model');
-const prediccionController = require('./Prediccion.controller');
 
 module.exports.partidos_list = async function () {
     const query = await Partido.find()
