@@ -9,6 +9,7 @@ const jsonwebtoken = require('jsonwebtoken');
 
 const partido_controller = require('../controllers/Partido.controller');
 const puntaje_controller = require('../controllers/Puntaje.controller');
+const agregarJugadores = require('../utils/jugadores/agregarJugadores');
 
 router.post('/login', async function (req, res, next) {
     const data = req.body;
@@ -105,6 +106,16 @@ router.delete('/puntaje-prueba', async function (req, res, next) {
 router.delete('/logout', async function (req, res) {
     await refresh_token_controller.refresh_token_delete(req.body.token);
     res.sendStatus(204);
+});
+
+router.post('/agregar-jugadores', async function (req, res) {
+    try {
+        await agregarJugadores();
+
+        res.sendStatus(204);
+    } catch (error) {
+        next(error);
+    }
 });
 
 router.get('/test', async function (req, res) {

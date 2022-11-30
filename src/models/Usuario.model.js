@@ -46,6 +46,15 @@ const UsuarioSchema = new mongoose.Schema({
         trim: true,
     },
     predicciones: [prediccionSchema],
+    prediccionMejorJugador: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Jugador'
+    },
+    prediccionMejorArquero: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Jugador'
+    },
+    prediccionMejorGoleador: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Jugador'
+    },
 }, {
     timestamps: true
 });

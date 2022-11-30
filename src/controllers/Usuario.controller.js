@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Usuario = require('../models/Usuario.model');
+const jugadorController = require('./Jugador.controller');
 
 module.exports.usuarios_list = async function () {
     const query = await Usuario.find()
@@ -46,7 +47,7 @@ module.exports.usuarios_create_post = async function (data) {
     // TODO ver si sacar _id
     data._id = new mongoose.Types.ObjectId;
     if (!data.nombreJugador) {
-        if (data.nombreCuenta.includes('@')) {            
+        if (data.nombreCuenta.includes('@')) {
             data.nombreJugador = data.nombreCuenta.substring(0, data.nombreCuenta.indexOf('@'));
         } else {
             data.nombreJugador = data.nombreCuenta;
@@ -158,6 +159,39 @@ module.exports.usuarios_get_with_password = async function (id) {
         throw {
             number: 404,
             content: "No se encuentra el Usuario",
+        }
+    }
+
+    return query;
+}
+
+module.exports.usuarios_put_prediccion_jugador = async function (id, prediccionMejorJugador, prediccionMejorArquero, prediccionMejorGoleador) {
+    if (prediccionMejorJugador != undefined) await jugadorController.jugadores_get(prediccionMejorJugador);
+    if (prediccionMejorArquero != undefined) await jugadorController.jugadores_get(prediccionMejorArquero);
+    if (prediccionMejorGoleador != undefined) await jugadorController.jugadores_get(prediccionMejorGoleador);
+
+    const query = await Usuario.findOneAndUpdate({ _id: id }, {
+        prediccionMejorJugador,
+        prediccionMejorArquero,
+        prediccionMejorGoleador
+    }, { new: true }).exec()
+        .catch((error) => {
+            if (error.name === "CastError") {
+                throw {
+                    number: 400,
+                    content: "Id incorrecto",
+                }
+            } else {
+                throw {
+                    content: error,
+                }
+            }
+        });
+
+    if (query === null) {
+        throw {
+            number: 404,
+            content: "No se encuentra al Usuario",
         }
     }
 
