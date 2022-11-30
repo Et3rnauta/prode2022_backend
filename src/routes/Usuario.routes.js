@@ -54,8 +54,6 @@ router.post('/usuarios', async function (req, res, next) {
     }
 })
 
-// TODO agregar ruta put que actualiza los scores de los jugadores
-
 router.put('/usuarios/:id', async function (req, res, next) {
     const id = req.params.id;
     const data = req.body;
@@ -63,6 +61,22 @@ router.put('/usuarios/:id', async function (req, res, next) {
     if (data.password) data.password = await bcrypt.hash(req.body.password, 10);
 
     usuario_controller.usuarios_put(id, data)
+        .then((answer) => {
+            res.status(200);
+            res.send(answer);
+        })
+        .catch((error) => {
+            next(error);
+        });
+})
+
+router.put('/usuarios-jugador/:id', async function (req, res, next) {
+    const id = req.params.id;
+    const prediccionMejorJugador= req.body.prediccionMejorJugador; 
+    const prediccionMejorArquero= req.body.prediccionMejorArquero; 
+    const prediccionMejorGoleador= req.body.prediccionMejorGoleador; 
+
+    usuario_controller.usuarios_put_prediccion_jugador(id, prediccionMejorJugador, prediccionMejorArquero, prediccionMejorGoleador)
         .then((answer) => {
             res.status(200);
             res.send(answer);
