@@ -65,6 +65,22 @@ router.put('/partidos/:id/update_score', function (req, res, next) {
         });
 })
 
+router.put('/partidos/:id/update_score_final', function (req, res, next) {
+    const id = req.params.id;
+    const golesEquipo1 = req.body.golesEquipo1;
+    const penalesEquipo1 = req.body.penalesEquipo1;
+    const golesEquipo2 = req.body.golesEquipo2;
+    const penalesEquipo2 = req.body.penalesEquipo2;
+
+    partido_final_controller.partido_update_resultado_final(id, golesEquipo1, golesEquipo2, penalesEquipo1, penalesEquipo2)
+        .then(() => {
+            res.sendStatus(204);
+        })
+        .catch((error) => {
+            next(error);
+        });
+})
+
 router.put('/partidos/:id', function (req, res, next) {
     const id = req.params.id;
     const data = req.body;
