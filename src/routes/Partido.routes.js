@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const partido_controller = require('../controllers/Partido.controller');
+const partido_final_controller = require('../controllers/PartidoFinal.controller');
 const puntaje_controller = require('../controllers/Puntaje.controller');
 
 router.get('/partidos/:id', function (req, res, next) {
@@ -17,6 +18,17 @@ router.get('/partidos/:id', function (req, res, next) {
 
 router.get('/partidos', function (req, res, next) {
     partido_controller.partidos_list()
+        .then((answer) => {
+            res.status(200);
+            res.send(answer);
+        })
+        .catch((error) => {
+            next(error);
+        });
+})
+
+router.get('/partidos-final', function (req, res, next) {
+    partido_final_controller.partidos_list_final()
         .then((answer) => {
             res.status(200);
             res.send(answer);

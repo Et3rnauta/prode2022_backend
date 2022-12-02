@@ -10,6 +10,12 @@ const PartidoSchema = new mongoose.Schema({
     golesEquipo2: {
         type: Number,
     },
+    penalesEquipo1: {
+        type: Number,
+    },
+    penalesEquipo2: {
+        type: Number,
+    },
     grupo: {
         type: String,
         trim: true,
@@ -25,6 +31,14 @@ const PartidoSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    tipoEliminatoria: {
+        type: String,
+        default: null,
+    },
+    identificadorEliminatorias: {
+        type: String,
+        default: null,
+    },
     partidoEquipo1: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Partido',
@@ -34,7 +48,6 @@ const PartidoSchema = new mongoose.Schema({
         ref: 'Partido',
     },
 });
-// TODO ver como modificar fecha en mongoose
 
 const Partido = mongoose.model("Partido", PartidoSchema);
 
