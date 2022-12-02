@@ -7,7 +7,7 @@ const server = require('http').createServer(app);
 const cors = require('cors');
 app.use(cors());
 
-require('dotenv-safe').config();
+require('dotenv').config();
 
 app.use(express.json());
 
