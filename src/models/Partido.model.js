@@ -35,6 +35,10 @@ const PartidoSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
+    identificadorEliminatorias: {
+        type: String,
+        default: null,
+    },
     partidoEquipo1: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Partido',
