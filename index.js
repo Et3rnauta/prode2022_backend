@@ -15,7 +15,11 @@ app.use(express.json());
 const mongoose = require("mongoose");
 const uri = process.env.MONGODB_URI;
 
-mongoose.connect(uri);
+try {
+    mongoose.connect(uri);    
+} catch (error) {
+    console.log("hola", uri, error)    
+}
 
 //* LOGGER MIDDLEWARE
 const commonLoggerMiddleware = require('./src/middlewares/commonLogger.middleware');
