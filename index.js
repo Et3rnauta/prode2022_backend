@@ -16,11 +16,13 @@ const mongoose = require("mongoose");
 const uri = process.env.MONGODB_URI;
 
 console.log("hola", uri)
-try {
-    mongoose.connect(uri);    
-} catch (error) {
-    console.log("hola", uri, error)    
-}
+    mongoose.connect(uri)
+    .then(() => {
+        console.log("conectado a mongoose");
+    })
+    .catch((e) => {
+        console.log("Hubo un Error", e);
+    });
 
 //* LOGGER MIDDLEWARE
 const commonLoggerMiddleware = require('./src/middlewares/commonLogger.middleware');
