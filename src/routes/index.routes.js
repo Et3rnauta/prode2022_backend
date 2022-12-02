@@ -13,4 +13,9 @@ app.use(partidoRouter);
 app.use(jugadorRouter);
 app.use(masterRoutes);
 
+require('express').Router().get('/', (req, res) => {
+    res.status(200);
+    res.send({ message: "Funca" });
+})
+
 module.exports = app;
