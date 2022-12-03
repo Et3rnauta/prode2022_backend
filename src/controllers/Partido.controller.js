@@ -95,6 +95,9 @@ module.exports.partidos_create_post = async function (data) {
 module.exports.partidos_put = async function (id, data) {
     data._id = undefined;
 
+    if(data.equipo1 == "") data.equipo1 = undefined;
+    if(data.equipo2 == "") data.equipo2 = undefined;
+
     const query = await Partido.findOneAndUpdate({ _id: id }, data, { new: true }).exec()
         .catch((error) => {
             if (error.name === "CastError") {
