@@ -1,6 +1,8 @@
-const mongoose = require('mongoose');
 const Partido = require('../models/Partido.model');
 const Usuario = require('../models/Usuario.model');
+const partidoController = require('./Partido.controller');
+const prediccionController = require('./Prediccion.controller');
+const usuario_controller = require('./Usuario.controller');
 
 module.exports.partidos_list_final = async function () {
     const query = await Partido.find({ esEliminatoria: true })
