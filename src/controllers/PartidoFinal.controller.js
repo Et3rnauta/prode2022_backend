@@ -30,7 +30,7 @@ module.exports.partido_update_resultado_final = async function (partidoId, goles
             seRealizo: true
         }
     );
-    const esVictoriaEquipo1 = golesEquipo1 > golesEquipo2 || (golesEquipo1 == golesEquipo2 && penalesEquipo1 > penalesEquipo2);
+    const esVictoriaEquipo1 = golesEquipo1 > golesEquipo2 || (golesEquipo1 == golesEquipo2 && penalesEquipo1 != undefined && penalesEquipo1 > penalesEquipo2);
 
     // Obtener Usuarios
     const usuarios = await Usuario.find()
@@ -47,6 +47,7 @@ module.exports.partido_update_resultado_final = async function (partidoId, goles
 
         if (prediccionIndex != -1) {
             // Obtener puntos correspondientes al resultado
+            // console.log(partidoId, partidos, esVictoriaEquipo1, usuario, prediccionIndex)
             const puntos = acertoResultado(partidoId, partidos, esVictoriaEquipo1, usuario, prediccionIndex) ? 2 : 0;
 
             // Sumar puntos de predicciones
@@ -70,53 +71,53 @@ module.exports.partido_update_resultado_final = async function (partidoId, goles
         }
     }
 
-    if (partidos.find(p => p._id == partidoId).tipoEliminatoria != "Final" || partidos.find(p => p._id == partidoId).tipoEliminatoria != "Tercero") {
-        // Actualizar con el ganador (o el perdedor) el siguiente partido
-        const nextPartido = partidos.find(p => p.partidoEquipo1 == partidoId || p.partidoEquipo2 == partidoId);
-        if (nextPartido.tipoEliminatoria == "Tercero") {
-            // Si es Tercero, con perdedor
-            if (nextPartido.partidoEquipo1 == partidoId) {
-                await Partido.findOneAndUpdate({ _id: nextPartido._id }, {
-                    equipo1: !esVictoriaEquipo1 ? query.equipo1 : query.equipo2
-                }).exec()
-                    .catch((error) => {
-                        throw {
-                            content: error,
-                        }
-                    });
-            } else {
-                await Partido.findOneAndUpdate({ _id: nextPartido._id }, {
-                    equipo2: !esVictoriaEquipo1 ? query.equipo1 : query.equipo2
-                }).exec()
-                    .catch((error) => {
-                        throw {
-                            content: error,
-                        }
-                    });
-            }
-        } else {
-            // Sino, con ganador
-            if (nextPartido.partidoEquipo1 == partidoId) {
-                await Partido.findOneAndUpdate({ _id: nextPartido._id }, {
-                    equipo1: esVictoriaEquipo1 ? query.equipo1 : query.equipo2
-                }).exec()
-                    .catch((error) => {
-                        throw {
-                            content: error,
-                        }
-                    });
-            } else {
-                await Partido.findOneAndUpdate({ _id: nextPartido._id }, {
-                    equipo2: esVictoriaEquipo1 ? query.equipo1 : query.equipo2
-                }).exec()
-                    .catch((error) => {
-                        throw {
-                            content: error,
-                        }
-                    });
-            }
-        }
-    }
+    // if (partidos.find(p => p._id == partidoId).tipoEliminatoria != "Final" || partidos.find(p => p._id == partidoId).tipoEliminatoria != "Tercero") {
+    //     // Actualizar con el ganador (o el perdedor) el siguiente partido
+    //     const nextPartido = partidos.find(p => p.partidoEquipo1 == partidoId || p.partidoEquipo2 == partidoId);
+    //     if (nextPartido.tipoEliminatoria == "Tercero") {
+    //         // Si es Tercero, con perdedor
+    //         if (nextPartido.partidoEquipo1 == partidoId) {
+    //             await Partido.findOneAndUpdate({ _id: nextPartido._id }, {
+    //                 equipo1: !esVictoriaEquipo1 ? query.equipo1 : query.equipo2
+    //             }).exec()
+    //                 .catch((error) => {
+    //                     throw {
+    //                         content: error,
+    //                     }
+    //                 });
+    //         } else {
+    //             await Partido.findOneAndUpdate({ _id: nextPartido._id }, {
+    //                 equipo2: !esVictoriaEquipo1 ? query.equipo1 : query.equipo2
+    //             }).exec()
+    //                 .catch((error) => {
+    //                     throw {
+    //                         content: error,
+    //                     }
+    //                 });
+    //         }
+    //     } else {
+    //         // Sino, con ganador
+    //         if (nextPartido.partidoEquipo1 == partidoId) {
+    //             await Partido.findOneAndUpdate({ _id: nextPartido._id }, {
+    //                 equipo1: esVictoriaEquipo1 ? query.equipo1 : query.equipo2
+    //             }).exec()
+    //                 .catch((error) => {
+    //                     throw {
+    //                         content: error,
+    //                     }
+    //                 });
+    //         } else {
+    //             await Partido.findOneAndUpdate({ _id: nextPartido._id }, {
+    //                 equipo2: esVictoriaEquipo1 ? query.equipo1 : query.equipo2
+    //             }).exec()
+    //                 .catch((error) => {
+    //                     throw {
+    //                         content: error,
+    //                     }
+    //                 });
+    //         }
+    //     }
+    // }
 }
 
 function acertoResultado(partidoId, partidos, esVictoriaEquipo1, usuario, prediccionIndex) {
@@ -134,15 +135,16 @@ function acertoResultado(partidoId, partidos, esVictoriaEquipo1, usuario, predic
                     break;
                 case "Cuartos":
                     // Busco el partido de donde vino el equipo 1
-                    partidoAnterior = partidos.find(p =>
-                        p.tipoEliminatoria == "Octavos" &&
-                        (p.equipo1 == elPartido.equipo1 || p.equipo1 == elPartido.equipo2));
+                    // partidoAnterior = partidos.find(p =>
+                    //     p.tipoEliminatoria == "Octavos" &&
+                    //     (p.equipo1 == elPartido.equipo1 || p.equipo2 == elPartido.equipo1));
+                    partidoAnterior = partidos.find(p => String(p._id) == String(elPartido.partidoEquipo1))
 
                     // Valido si en el partido anterior, el equipo 1 era tambien equipo 1
                     esEquipo1 = partidoAnterior.equipo1 == elPartido.equipo1;
 
                     // Obtengo la prediccion del usuario para ese partido
-                    prediccionAnterior = usuario.predicciones.find(r => r.partidoId == partidoAnterior._id);
+                    prediccionAnterior = usuario.predicciones.find(r => String(r.partidoId) == String(partidoAnterior._id));
 
                     // Si tenia prediccion y era correcta
                     res = prediccionAnterior != undefined &&
@@ -150,33 +152,36 @@ function acertoResultado(partidoId, partidos, esVictoriaEquipo1, usuario, predic
                             (!esEquipo1 && prediccionAnterior.golesEquipo2 == 1));
                     break;
                 case "Semifinales":
-                    partidoAnterior = partidos.find(p =>
-                        p.tipoEliminatoria == "Cuartos" &&
-                        (p.equipo1 == elPartido.equipo1 || p.equipo1 == elPartido.equipo2));
+                    // partidoAnterior = partidos.find(p =>
+                    //     p.tipoEliminatoria == "Cuartos" &&
+                    //     (p.equipo1 == elPartido.equipo1 || p.equipo2 == elPartido.equipo1));
+                    partidoAnterior = partidos.find(p => String(p._id) == String(elPartido.partidoEquipo1))
                     esEquipo1 = partidoAnterior.equipo1 == elPartido.equipo1;
-                    prediccionAnterior = usuario.predicciones.find(r => r.partidoId == partidoAnterior._id);
+                    prediccionAnterior = usuario.predicciones.find(r => String(r.partidoId) == String(partidoAnterior._id));
 
                     res = prediccionAnterior != undefined &&
                         ((esEquipo1 && prediccionAnterior.golesEquipo1 == 1) ||
                             (!esEquipo1 && prediccionAnterior.golesEquipo2 == 1));
                     break;
                 case "Final":
-                    partidoAnterior = partidos.find(p =>
-                        p.tipoEliminatoria == "Semifinales" &&
-                        (p.equipo1 == elPartido.equipo1 || p.equipo1 == elPartido.equipo2));
+                    // partidoAnterior = partidos.find(p =>
+                    //     p.tipoEliminatoria == "Semifinales" &&
+                    //     (p.equipo1 == elPartido.equipo1 || p.equipo2 == elPartido.equipo1));                    
+                    partidoAnterior = partidos.find(p => String(p._id) == String(elPartido.partidoEquipo1))
                     esEquipo1 = partidoAnterior.equipo1 == elPartido.equipo1;
-                    prediccionAnterior = usuario.predicciones.find(r => r.partidoId == partidoAnterior._id);
+                    prediccionAnterior = usuario.predicciones.find(r => String(r.partidoId) == String(partidoAnterior._id));
 
                     res = prediccionAnterior != undefined &&
                         ((esEquipo1 && prediccionAnterior.golesEquipo1 == 1) ||
                             (!esEquipo1 && prediccionAnterior.golesEquipo2 == 1));
                     break;
                 case "Tercero":
-                    partidoAnterior = partidos.find(p =>
-                        p.tipoEliminatoria == "Semifinales" &&
-                        (p.equipo1 == elPartido.equipo1 || p.equipo1 == elPartido.equipo2));
+                    // partidoAnterior = partidos.find(p =>
+                    //     p.tipoEliminatoria == "Semifinales" &&
+                    //     (p.equipo1 == elPartido.equipo1 || p.equipo1 == elPartido.equipo2));
+                    partidoAnterior = partidos.find(p => String(p._id) == String(elPartido.partidoEquipo1))
                     esEquipo1 = partidoAnterior.equipo1 == elPartido.equipo1;
-                    prediccionAnterior = usuario.predicciones.find(r => r.partidoId == partidoAnterior._id);
+                    prediccionAnterior = usuario.predicciones.find(r => String(r.partidoId) == String(partidoAnterior._id));
 
                     // Si tenia prediccion y era que iba a perder
                     res = prediccionAnterior != undefined &&
@@ -194,15 +199,16 @@ function acertoResultado(partidoId, partidos, esVictoriaEquipo1, usuario, predic
                     break;
                 case "Cuartos":
                     // Busco el partido de donde vino el equipo 1
-                    partidoAnterior = partidos.find(p =>
-                        p.tipoEliminatoria == "Octavos" &&
-                        (p.equipo2 == elPartido.equipo1 || p.equipo2 == elPartido.equipo2));
+                    // partidoAnterior = partidos.find(p =>
+                    //     p.tipoEliminatoria == "Octavos" &&
+                    //     (p.equipo1 == elPartido.equipo2 || p.equipo2 == elPartido.equipo2));
+                    partidoAnterior = partidos.find(p => String(p._id) == String(elPartido.partidoEquipo2))
 
                     // Valido si en el partido anterior, el equipo 1 era tambien equipo 1
                     esEquipo1 = partidoAnterior.equipo1 == elPartido.equipo1;
 
                     // Obtengo la prediccion del usuario para ese partido
-                    prediccionAnterior = usuario.predicciones.find(r => r.partidoId == partidoAnterior._id);
+                    prediccionAnterior = usuario.predicciones.find(r => String(r.partidoId) == String(partidoAnterior._id));
 
                     // Si tenia prediccion y era correcta
                     res = prediccionAnterior != undefined &&
@@ -210,33 +216,39 @@ function acertoResultado(partidoId, partidos, esVictoriaEquipo1, usuario, predic
                             (!esEquipo1 && prediccionAnterior.golesEquipo2 == 1));
                     break;
                 case "Semifinales":
-                    partidoAnterior = partidos.find(p =>
-                        p.tipoEliminatoria == "Cuartos" &&
-                        (p.equipo2 == elPartido.equipo1 || p.equipo2 == elPartido.equipo2));
+                    // partidoAnterior = partidos.find(p =>
+                    //     p.tipoEliminatoria == "Cuartos" &&
+                    //     (p.equipo1 == elPartido.equipo2 || p.equipo2 == elPartido.equipo2));
+
+                    partidoAnterior = partidos.find(p => String(p._id) == String(elPartido.partidoEquipo2))
                     esEquipo1 = partidoAnterior.equipo1 == elPartido.equipo1;
-                    prediccionAnterior = usuario.predicciones.find(r => r.partidoId == partidoAnterior._id);
+                    prediccionAnterior = usuario.predicciones.find(r => String(r.partidoId) == String(partidoAnterior._id));
 
                     res = prediccionAnterior != undefined &&
                         ((esEquipo1 && prediccionAnterior.golesEquipo1 == 1) ||
                             (!esEquipo1 && prediccionAnterior.golesEquipo2 == 1));
                     break;
                 case "Final":
-                    partidoAnterior = partidos.find(p =>
-                        p.tipoEliminatoria == "Semifinales" &&
-                        (p.equipo2 == elPartido.equipo1 || p.equipo2 == elPartido.equipo2));
+                    // partidoAnterior = partidos.find(p =>
+                    //     p.tipoEliminatoria == "Semifinales" &&
+                    //     (p.equipo1 == elPartido.equipo2 || p.equipo2 == elPartido.equipo2));
+
+                    partidoAnterior = partidos.find(p => String(p._id) == String(elPartido.partidoEquipo2))
                     esEquipo1 = partidoAnterior.equipo1 == elPartido.equipo1;
-                    prediccionAnterior = usuario.predicciones.find(r => r.partidoId == partidoAnterior._id);
+                    prediccionAnterior = usuario.predicciones.find(r => String(r.partidoId) == String(partidoAnterior._id));
 
                     res = prediccionAnterior != undefined &&
                         ((esEquipo1 && prediccionAnterior.golesEquipo1 == 1) ||
                             (!esEquipo1 && prediccionAnterior.golesEquipo2 == 1));
                     break;
                 case "Tercero":
-                    partidoAnterior = partidos.find(p =>
-                        p.tipoEliminatoria == "Semifinales" &&
-                        (p.equipo2 == elPartido.equipo1 || p.equipo2 == elPartido.equipo2));
+                    // partidoAnterior = partidos.find(p =>
+                    //     p.tipoEliminatoria == "Semifinales" &&
+                    //     (p.equipo1 == elPartido.equipo2 || p.equipo2 == elPartido.equipo2));
+
+                    partidoAnterior = partidos.find(p => String(p._id) == String(elPartido.partidoEquipo2))
                     esEquipo1 = partidoAnterior.equipo1 == elPartido.equipo1;
-                    prediccionAnterior = usuario.predicciones.find(r => r.partidoId == partidoAnterior._id);
+                    prediccionAnterior = usuario.predicciones.find(r => String(r.partidoId) == String(partidoAnterior._id));
 
                     // Si tenia prediccion y era que iba a perder
                     res = prediccionAnterior != undefined &&
